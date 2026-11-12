@@ -456,8 +456,9 @@ a:hover {
 
 .figure__number {
   margin-top: 0.04em;
-  font-size: clamp(2.5rem, 14vw, var(--fs-figure));
-  font-size: clamp(2.5rem, 15cqi, var(--fs-figure));
+  /* Both numbers are short ("1 in 7", "2 in 3"), so they can run large on a phone too. */
+  font-size: clamp(3rem, 19vw, var(--fs-figure));
+  font-size: clamp(3rem, 21cqi, var(--fs-figure));
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.04em;
