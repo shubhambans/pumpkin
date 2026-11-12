@@ -1,4 +1,6 @@
-/* Pumpkin demo page. Builds on styles.css; loaded only by demo.html. */
+/* Pumpkin demo page. Builds on styles.css; loaded only by demo.html.
+   The sample screens are set like paper forms: ruled rows, square corners,
+   a line to sign on. Nothing here is a filled button. */
 
 /* Step tabs */
 
@@ -69,11 +71,11 @@
 }
 
 /* A step: the words, the sample screen, then the way onward.
-   On a wide screen the words and the buttons share the left column. */
+   On a wide screen the words and the way onward share the left column. */
 
 .demo__panel {
   display: grid;
-  grid-template-areas: "text" "sheet" "nav";
+  grid-template-areas: "text" "sheet" "pager";
   gap: var(--s-4) clamp(2rem, 6vw, 5rem);
 }
 
@@ -85,6 +87,11 @@
   margin-top: 0;
 }
 
+/* On a phone the words, the screen and the way onward stack in that order. */
+.demo__side {
+  display: contents;
+}
+
 .demo__text {
   grid-area: text;
 }
@@ -93,26 +100,23 @@
   grid-area: sheet;
 }
 
-.demo__nav {
-  grid-area: nav;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.demo__nav p {
-  margin-left: var(--s-1);
-  color: var(--ink-soft);
-  font-size: var(--fs-small);
-}
-
+/* On a wide screen the words and the way onward stay in view while the screen scrolls. */
 @media (min-width: 56rem) {
   .demo__panel {
     grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    grid-template-rows: auto 1fr;
-    grid-template-areas: "text sheet" "nav sheet";
+    grid-template-areas: "side sheet";
     align-items: start;
+  }
+
+  .demo__side {
+    position: sticky;
+    top: var(--s-4);
+    display: block;
+    grid-area: side;
+  }
+
+  .demo__side .pager {
+    margin-top: var(--s-4);
   }
 
   .demo.is-live .demo__panel {
@@ -139,12 +143,68 @@
   color: var(--ink-soft);
 }
 
-/* The sample screen: a little denser than the page around it */
+.demo__stakes {
+  font-weight: 600;
+}
+
+/* The way onward: set like a line at the foot of a printed page, not a button. */
+
+.pager {
+  grid-area: pager;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  max-width: 30rem;
+  border-top: 1px solid var(--ink);
+}
+
+.pager button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.pager__back {
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+.pager__next {
+  margin-left: auto;
+  color: var(--ink);
+}
+
+.pager button:hover {
+  color: var(--accent);
+}
+
+.pager svg {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  transition: transform 220ms var(--ease-out);
+}
+
+.pager__next:hover svg {
+  transform: translateX(0.25rem);
+}
+
+/* The sample screen: a sheet of paper, a little denser than the page around it */
 
 .sheet {
   padding: clamp(1.25rem, 0.9rem + 1.6vw, 2rem);
   border: 1px solid var(--rule);
-  border-radius: var(--radius);
+  border-radius: 2px;
   background: var(--sheet);
   font-size: 1rem;
   line-height: 1.5;
@@ -152,7 +212,8 @@
 
 .sheet__label,
 .sheet__note,
-.sheet__state {
+.sheet__people,
+.doc__law {
   color: var(--ink-soft);
   font-size: var(--fs-small);
 }
@@ -165,43 +226,104 @@
   margin-top: var(--s-2);
 }
 
+.sheet__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 var(--s-3);
+  padding-bottom: var(--s-2);
+  border-bottom: 1px solid var(--ink);
+}
+
+.sheet__people strong {
+  color: var(--ink);
+}
+
+/* Step 1: the whole conversation, with the one decision this demo follows */
+
+.outline {
+  padding-block: var(--s-2);
+  border-bottom: 1px solid var(--rule);
+}
+
+.outline__list {
+  columns: 2;
+  column-gap: var(--s-4);
+  margin-top: 0.5rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-small);
+  counter-reset: topic;
+}
+
+.outline__list li {
+  display: grid;
+  grid-template-columns: 1.625rem minmax(0, 1fr);
+  padding-block: 0.1875rem;
+  break-inside: avoid;
+  counter-increment: topic;
+}
+
+.outline__list li::before {
+  content: counter(topic);
+  content: counter(topic) / "";
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.outline__list .is-here {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.outline__list .is-here::before {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.outline__here {
+  grid-column: 2;
+  color: var(--accent);
+}
+
+@media (max-width: 34rem) {
+  .outline__list {
+    columns: 1;
+  }
+}
+
+.says {
+  margin-top: var(--s-3);
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+.says strong {
+  color: var(--ink);
+}
+
 .sheet fieldset {
   min-width: 0;
-  margin-top: 1.25rem;
+  margin-top: 0.5rem;
   padding: 0;
   border: 0;
+  border-bottom: 1px solid var(--rule);
 }
 
 .sheet legend {
-  padding: 0;
+  padding: 0 0 0.5rem;
   font-weight: 600;
   line-height: 1.4;
 }
 
+/* Answers are ruled lines with a circle to fill in, as on a paper form. */
 .option {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
-  margin-top: 0.5rem;
-  padding: 0.625rem 0.875rem;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
+  padding-block: 0.5625rem;
+  border-top: 1px solid var(--rule);
   line-height: 1.4;
   cursor: pointer;
-  transition: border-color 160ms ease;
-}
-
-.option:hover {
-  border-color: var(--ink-soft);
-}
-
-.option:has(input:checked) {
-  border-color: var(--ink);
-}
-
-.option:has(input:focus-visible) {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }
 
 .option input {
@@ -209,58 +331,99 @@
   width: 1.0625rem;
   height: 1.0625rem;
   margin: 0.16em 0 0;
-  accent-color: var(--accent);
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+}
+
+.option input:checked {
+  background: var(--ink);
+  box-shadow: inset 0 0 0 3px var(--sheet);
+}
+
+.option:hover input:not(:checked) {
+  box-shadow: inset 0 0 0 3px var(--sheet), inset 0 0 0 9px var(--rule);
 }
 
 .option input:focus-visible {
   outline: none;
 }
 
-.sheet__head {
+.option:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Step 2: the directive, which changes with the state */
+
+.states {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s-1) var(--s-3);
-  padding-bottom: var(--s-2);
-  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
+  gap: 0 1.125rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ink);
 }
 
-.sheet__head--lookup {
-  margin-top: var(--s-1);
+.states .sheet__label {
+  flex-basis: 100%;
 }
 
-.sheet__head--lookup .sheet__name {
-  margin-top: 0;
-}
-
-.sheet__state {
+.states label {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-}
-
-.sheet__state select {
   min-height: 2.75rem;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  background: var(--paper);
-  color: var(--ink);
-  font-weight: 400;
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 160ms ease;
 }
 
-.sheet__name {
+.states input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.states label:hover {
+  color: var(--ink);
+}
+
+.states label:has(input:checked) {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.45em;
+}
+
+.states label:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.doc__law {
   margin-top: var(--s-3);
+}
+
+.doc__title {
+  margin-top: 0.125rem;
   font-size: var(--fs-lead);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
-.sheet__found {
-  margin-top: var(--s-2);
+.doc__who {
+  margin-top: 0.25rem;
   font-weight: 600;
 }
 
@@ -274,6 +437,7 @@
 }
 
 .wishes dt,
+.known dt,
 .log dt {
   color: var(--ink-soft);
   font-size: var(--fs-small);
@@ -283,6 +447,12 @@
 .wishes dd {
   margin-top: 0.125rem;
 }
+
+.wishes__rest dd {
+  color: var(--ink-soft);
+}
+
+/* Step 3: the review and the signature */
 
 .checks {
   margin-top: var(--s-2);
@@ -309,12 +479,102 @@
   transform: rotate(45deg);
 }
 
-.sheet__action {
+/* A line to sign on. Before signing it is the control; after, it holds the name. */
+.signline {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  min-height: 4.5rem;
   margin-top: var(--s-3);
+  padding: 0 0 0.375rem;
+  border: 0;
+  border-bottom: 1.5px solid var(--ink);
+  background: none;
+  color: var(--ink-soft);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  text-align: left;
 }
 
-.sheet__action p {
+button.signline {
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+button.signline:hover {
+  border-bottom-color: var(--accent);
+  color: var(--accent);
+}
+
+.signline--done strong {
+  color: var(--ink);
+  font-size: var(--fs-statement);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.signline--done:focus {
+  outline: none;
+}
+
+/* Step 4: what the emergency team knows, before and after the lookup */
+
+.lookup {
+  display: flex;
+  align-items: stretch;
+  margin-top: 0.5rem;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  background: var(--paper);
+}
+
+.lookup__who {
+  flex: 1 1 auto;
+  padding: 0.625rem 0.875rem;
   font-weight: 600;
+}
+
+.lookup__go {
+  flex: none;
+  padding: 0 1rem;
+  border: 0;
+  border-left: 1px solid var(--ink);
+  background: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.lookup__go:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.lookup__go:focus-visible {
+  outline-offset: -4px;
+}
+
+.sheet__found {
+  margin-top: var(--s-2);
+  font-weight: 600;
+}
+
+.known {
+  margin-top: 0.75rem;
+}
+
+.known > div {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 0 var(--s-2);
+  padding-block: 0.625rem;
+  border-top: 1px solid var(--rule);
+}
+
+.known [data-unknown] {
+  color: var(--ink-soft);
 }
 
 .log {
@@ -323,9 +583,9 @@
 
 .log > div {
   display: grid;
-  grid-template-columns: 6.5rem minmax(0, 1fr);
+  grid-template-columns: 9.5rem minmax(0, 1fr);
   align-items: baseline;
-  gap: var(--s-2);
+  gap: 0 var(--s-2);
   padding-block: 0.625rem;
   border-bottom: 1px solid var(--rule);
 }
@@ -335,10 +595,21 @@
   border-bottom: 0;
 }
 
+@media (max-width: 34rem) {
+  .known > div,
+  .log > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Motion: a quiet fade when a step opens or a line changes. */
+
 @media (prefers-reduced-motion: no-preference) {
   .demo.is-live .demo__panel,
   .demo.is-live [data-result],
-  .demo.is-live [data-signed] {
+  .demo.is-live [data-found],
+  .demo.is-live [data-signed],
+  .demo.is-live .is-new {
     animation: arrive 500ms var(--ease-out) backwards;
   }
 }
