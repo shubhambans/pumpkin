@@ -18,6 +18,7 @@
   --paper: #F7F3EC;
   --sheet: #FFFDF9;
   --ink: #1B1916;
+  --ink-lift: #3A352E;
   --ink-soft: #5C564D;
   --accent: #AF4C0C;
   --accent-deep: #8C3B08;
@@ -39,7 +40,6 @@
   --s-3: 1.5rem;
   --s-4: 2rem;
   --s-5: 3rem;
-  --s-6: 4rem;
   --gutter: clamp(1.25rem, 5vw, 4rem);
   --section: clamp(5.5rem, 3.4rem + 8.5vw, 11rem);
   --block: clamp(2.5rem, 1.8rem + 3vw, 4.5rem);
@@ -65,7 +65,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scrollbar-color: #C6BDAE var(--paper);
+  scrollbar-color: var(--ink-soft) var(--paper);
 }
 
 body {
@@ -175,7 +175,7 @@ a:hover {
 
 .skip-link {
   position: absolute;
-  top: 0;
+  top: 0.625rem;
   left: var(--gutter);
   z-index: 30;
   padding: 0.75rem 1rem;
@@ -183,8 +183,8 @@ a:hover {
   color: var(--paper);
   font-weight: 600;
   text-decoration: none;
-  border-radius: 0 0 var(--radius) var(--radius);
-  transform: translateY(-120%);
+  border-radius: var(--radius);
+  transform: translateY(-200%);
 }
 
 .skip-link:focus {
@@ -236,6 +236,14 @@ a:hover {
   font-weight: 600;
 }
 
+/* Standalone text links get a finger-sized target without moving the text. */
+.more a,
+.place__link a {
+  display: inline-block;
+  margin-block: -0.625rem;
+  padding-block: 0.625rem;
+}
+
 /* Buttons */
 
 .button {
@@ -265,12 +273,17 @@ a:hover {
   transform: translateY(1px);
 }
 
+/* An orange ring around an orange button disappears; use ink. */
+.button:focus-visible {
+  outline-color: var(--ink);
+}
+
 .button--ink {
   background: var(--ink);
 }
 
 .button--ink:hover {
-  background: #3A352E;
+  background: var(--ink-lift);
 }
 
 .button--quiet {
@@ -383,6 +396,8 @@ a:hover {
 
 .hero {
   padding-block: clamp(2.5rem, 0.6rem + 8.9vw, 8.75rem) var(--section);
+  /* On a short laptop screen, keep the first line of the next section in view. */
+  padding-block: min(clamp(2.5rem, 0.6rem + 8.9vw, 8.75rem), 12svh) min(var(--section), 15svh);
 }
 
 .hero--page {
@@ -399,11 +414,18 @@ a:hover {
 }
 
 .lead {
-  max-width: 36rem;
+  max-width: var(--measure);
   margin-top: clamp(1.5rem, 1.3rem + 0.9vw, 2.25rem);
   font-size: var(--fs-lead);
   line-height: 1.45;
   text-wrap: balance;
+}
+
+/* From tablet up, the definition breaks between its phrases, not on "for" or "that". */
+@media (min-width: 40rem) {
+  .lead span {
+    display: inline-block;
+  }
 }
 
 .hero .button {
@@ -501,7 +523,7 @@ a:hover {
   margin-top: var(--block);
 }
 
-@media (min-width: 40rem) {
+@media (min-width: 48rem) {
   .pair {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -576,8 +598,11 @@ a:hover {
   margin-top: clamp(1.5rem, 1.3rem + 0.9vw, 2.25rem);
 }
 
+/* The closing action: a comfortable tap target that stays on one line on a small phone. */
 .contact p a {
-  font-size: var(--fs-lead);
+  display: inline-block;
+  padding-block: 0.375rem;
+  font-size: clamp(1rem, 5.4vw, var(--fs-lead));
   font-weight: 600;
   overflow-wrap: anywhere;
 }
@@ -630,6 +655,17 @@ a:hover {
   margin-top: clamp(0.75rem, 0.6rem + 0.6vw, 1rem);
 }
 
+/* On a phone, sit lower and a little tighter so the notice covers less of the page. */
+@media (max-width: 34rem) {
+  .cookie {
+    bottom: 0.5rem;
+  }
+
+  .cookie .button {
+    min-height: 2.5rem;
+  }
+}
+
 /* Motion: one quiet fade as a page opens, nothing on scroll. */
 
 @media (prefers-reduced-motion: no-preference) {
@@ -657,6 +693,14 @@ a:hover {
 @keyframes arrive {
   from {
     opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
   }
 }
 

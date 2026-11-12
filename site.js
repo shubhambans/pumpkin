@@ -73,6 +73,25 @@
     });
   });
 
+  const show = () => {
+    banner.hidden = false;
+  };
+
+  // On a short phone the notice would sit on top of the page's main button.
+  // Nothing loads before an answer, so there it waits for the first scroll.
+  const coversAction = () => {
+    const action = document.querySelector(".hero .button");
+    if (!action) return false;
+    banner.hidden = false;
+    const a = action.getBoundingClientRect();
+    const b = banner.getBoundingClientRect();
+    banner.hidden = true;
+    return a.bottom > b.top && a.top < b.bottom && a.right > b.left && a.left < b.right;
+  };
+
   if (choice === "yes") loadMaps();
-  if (choice === null) banner.hidden = false;
+  if (choice === null) {
+    if (coversAction()) window.addEventListener("scroll", show, { once: true, passive: true });
+    else show();
+  }
 })();
