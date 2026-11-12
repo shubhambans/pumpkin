@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo | Pumpkin</title>
+  <meta name="description" content="A sample Pumpkin session in four steps: the conversation, the directive, the review, and the moment it is needed. The person and her answers are made up.">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#F7F3EC">
+  <link rel="canonical" href="https://shubhambans.github.io/pumpkin/demo.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shubhambans.github.io/pumpkin/demo.html">
+  <meta property="og:title" content="Demo | Pumpkin">
+  <meta property="og:description" content="A sample Pumpkin session in four steps. The person and her answers are made up.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23AF4C0C'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400..800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="demo.css">
+  <script src="site.js" defer></script>
+  <script src="demo.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header page">
+    <a class="wordmark" href="./">Pumpkin</a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul role="list">
+        <li><a href="demo.html" aria-current="page">Demo</a></li>
+        <li><a href="investors.html">Investors</a></li>
+        <li><a href="./#location">Location</a></li>
+        <li><a href="./#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero hero--page page" aria-labelledby="page-title">
+      <h1 id="page-title">A sample session, start to finish.</h1>
+      <p class="lead">Four steps, about a minute. Ruth is made up for this demo, and so are her answers.</p>
+    </section>
+
+    <section class="section demo page" aria-label="Demo" data-demo>
+      <ol class="demo__steps" role="list" hidden>
+        <li><button type="button" data-go="0"><b>1</b> <span>Conversation</span></button></li>
+        <li><button type="button" data-go="1"><b>2</b> <span>Directive</span></button></li>
+        <li><button type="button" data-go="2"><b>3</b> <span>Review</span></button></li>
+        <li><button type="button" data-go="3"><b>4</b> <span>Crisis</span></button></li>
+      </ol>
+
+      <article class="demo__panel" data-panel aria-labelledby="demo-1">
+        <div class="demo__text">
+          <h2 id="demo-1" class="statement" tabindex="-1">A guided conversation.</h2>
+          <p>Built on questions written by dementia and psychiatry clinicians, for the person or their family.</p>
+          <p class="demo__scene">Ruth is 78. This spring she was told she has early Alzheimer’s disease. She sits down with her daughter, Dana, and answers in her own words.</p>
+        </div>
+        <form class="sheet" aria-label="Sample conversation" data-answers>
+          <p class="sheet__label">Three sample questions. The real conversation is longer.</p>
+          <fieldset>
+            <legend>When you are frightened or confused in the hospital, what helps most?</legend>
+            <label class="option"><input type="radio" name="calm" value="0"> Having my daughter with me</label>
+            <label class="option"><input type="radio" name="calm" value="1" checked> A quiet room and my own music</label>
+            <label class="option"><input type="radio" name="calm" value="2"> Someone explaining each step before it happens</label>
+          </fieldset>
+          <fieldset>
+            <legend>If you could no longer recognize your family, what would matter more?</legend>
+            <label class="option"><input type="radio" name="goal" value="0" checked> Being comfortable, even if that means less time</label>
+            <label class="option"><input type="radio" name="goal" value="1"> Trying treatment for a short, agreed period first</label>
+            <label class="option"><input type="radio" name="goal" value="2"> Every treatment that could give me more time</label>
+          </fieldset>
+          <fieldset>
+            <legend>Who should speak for you if you cannot speak for yourself?</legend>
+            <label class="option"><input type="radio" name="voice" value="0" checked> My daughter, Dana</label>
+            <label class="option"><input type="radio" name="voice" value="1"> My son, Paul</label>
+            <label class="option"><input type="radio" name="voice" value="2"> My sister, June</label>
+          </fieldset>
+        </form>
+        <div class="demo__nav" hidden>
+          <button type="button" class="button" data-next>Next</button>
+          <p>Step 1 of 4</p>
+        </div>
+      </article>
+
+      <article class="demo__panel" data-panel aria-labelledby="demo-2">
+        <div class="demo__text">
+          <h2 id="demo-2" class="statement" tabindex="-1">A directive that fits your state’s law.</h2>
+          <p>Pumpkin drafts it.</p>
+          <p class="demo__scene">Ruth’s answers become a short document in her own words. Change an answer in step one, or the state here, and the draft follows.</p>
+        </div>
+        <div class="sheet">
+          <div class="sheet__head">
+            <p class="sheet__label">Advance directive, <span data-status>draft</span></p>
+            <label class="sheet__state">State
+              <select data-state>
+                <option>Washington</option>
+                <option>Oregon</option>
+                <option>California</option>
+                <option>Texas</option>
+                <option>New York</option>
+                <option>Florida</option>
+              </select>
+            </label>
+          </div>
+          <p class="sheet__name">Ruth A.</p>
+          <dl class="wishes">
+            <div>
+              <dt>If I am frightened or confused</dt>
+              <dd data-wish="calm">Please give me a quiet room and play my own music.</dd>
+            </div>
+            <div>
+              <dt>If I can no longer recognize my family</dt>
+              <dd data-wish="goal">Keep me comfortable, even if that means less time.</dd>
+            </div>
+            <div>
+              <dt>Who speaks for me</dt>
+              <dd data-wish="voice">My daughter, Dana.</dd>
+            </div>
+          </dl>
+          <p class="sheet__note">Drafted to fit <span data-state-name>Washington</span>’s rules.</p>
+        </div>
+        <div class="demo__nav" hidden>
+          <button type="button" class="button button--quiet" data-back>Back</button>
+          <button type="button" class="button" data-next>Next</button>
+          <p>Step 2 of 4</p>
+        </div>
+      </article>
+
+      <article class="demo__panel" data-panel aria-labelledby="demo-3">
+        <div class="demo__text">
+          <h2 id="demo-3" class="statement" tabindex="-1">A clinician reviews it with you before you sign.</h2>
+          <p class="demo__scene">Dr. Morris, Ruth’s geriatrician, reads the draft back to Ruth and Dana, answers their questions, and checks that it says what Ruth means.</p>
+        </div>
+        <div class="sheet">
+          <p class="sheet__label">Review with Dr. Morris</p>
+          <ul class="checks" role="list">
+            <li>Read back in plain language</li>
+            <li>Questions answered</li>
+            <li>Ruth confirms these are her wishes</li>
+          </ul>
+          <div class="sheet__action">
+            <button type="button" class="button button--ink button--small" data-sign hidden>Sign the directive</button>
+            <p data-signed>Signed by Ruth A. Reviewed by Dr. Morris.</p>
+          </div>
+        </div>
+        <div class="demo__nav" hidden>
+          <button type="button" class="button button--quiet" data-back>Back</button>
+          <button type="button" class="button" data-next>Next</button>
+          <p>Step 3 of 4</p>
+        </div>
+      </article>
+
+      <article class="demo__panel" data-panel aria-labelledby="demo-4">
+        <div class="demo__text">
+          <h2 id="demo-4" class="statement" tabindex="-1">There in a crisis.</h2>
+          <p>Shared with your family and care team, one quick lookup away, and we track whether it was seen and followed.</p>
+          <p class="demo__scene">Three months later, Ruth arrives at an emergency department at night, confused and on her own.</p>
+        </div>
+        <div class="sheet">
+          <p class="sheet__label">Emergency department, 2:10 am</p>
+          <div class="sheet__head sheet__head--lookup">
+            <p class="sheet__name">Ruth A., 78</p>
+            <button type="button" class="button button--ink button--small" data-lookup hidden>Look up</button>
+          </div>
+          <div data-result>
+            <p class="sheet__found">Advance directive on file, reviewed and signed.</p>
+            <dl class="wishes">
+              <div>
+                <dt>If I am frightened or confused</dt>
+                <dd data-wish="calm">Please give me a quiet room and play my own music.</dd>
+              </div>
+              <div>
+                <dt>If I can no longer recognize my family</dt>
+                <dd data-wish="goal">Keep me comfortable, even if that means less time.</dd>
+              </div>
+              <div>
+                <dt>Who speaks for me</dt>
+                <dd data-wish="voice">My daughter, Dana.</dd>
+              </div>
+            </dl>
+            <dl class="log">
+              <div>
+                <dt>Shared with</dt>
+                <dd><span data-voice-name>Dana</span> and Ruth’s care team</dd>
+              </div>
+              <div>
+                <dt>Seen</dt>
+                <dd>2:14 am, by the emergency clinician</dd>
+              </div>
+              <div>
+                <dt>Followed</dt>
+                <dd>Yes</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        <div class="demo__nav" hidden>
+          <button type="button" class="button button--quiet" data-back>Back</button>
+          <button type="button" class="button button--quiet" data-restart>Start over</button>
+          <p>Step 4 of 4</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="section contact page" aria-labelledby="contact-title">
+      <h2 id="contact-title" class="statement">Running a PACE program or working in dementia or psychiatric care? <span>We’d like to talk.</span></h2>
+      <p><a href="mailto:healthpumpkin@gmail.com">healthpumpkin@gmail.com</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer page">
+    <p>© 2026 Pumpkin</p>
+    <button type="button" class="text-button" data-cookie-settings hidden>Cookie settings</button>
+  </footer>
+</body>
+</html>

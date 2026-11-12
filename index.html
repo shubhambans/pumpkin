@@ -17,14 +17,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400..800&display=swap">
   <link rel="stylesheet" href="styles.css">
+  <script src="site.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header page">
     <a class="wordmark" href="./">Pumpkin</a>
-    <nav aria-label="Primary">
-      <a href="#contact">Contact</a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul role="list">
+        <li><a href="demo.html">Demo</a></li>
+        <li><a href="investors.html">Investors</a></li>
+        <li><a href="#location">Location</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
     </nav>
   </header>
 
@@ -49,8 +55,8 @@
       <p class="prose">The help is the bottleneck. A trained facilitator needs 60 to 90 minutes per person, and clinics don’t have the staff. Without a plan, care defaults to the most aggressive option.</p>
     </section>
 
-    <section class="section how page" aria-labelledby="how-title">
-      <h2 id="how-title">How it works</h2>
+    <section class="section page" id="how" aria-labelledby="how-title">
+      <h2 id="how-title" class="title">How it works</h2>
       <ol class="steps" role="list">
         <li>
           <h3>A guided conversation.</h3>
@@ -68,37 +74,69 @@
           <p>Shared with your family and care team, one quick lookup away, and we track whether it was seen and followed.</p>
         </li>
       </ol>
+      <p class="more"><a href="demo.html">Try the demo</a></p>
     </section>
 
-    <section class="section pays page" aria-labelledby="pays-title">
-      <h2 id="pays-title">Patients never pay.</h2>
+    <section class="section page" aria-labelledby="pays-title">
+      <h2 id="pays-title" class="title">Patients never pay.</h2>
       <p class="prose">We start with PACE programs, which receive a fixed payment per older adult and cover all of their care. Every avoided hospital stay is money they keep, and nearly half of PACE participants have some degree of dementia.</p>
+      <p class="more"><a href="investors.html">For investors</a></p>
     </section>
 
-    <section class="section team page" aria-labelledby="team-title">
+    <section class="section page" id="team" aria-labelledby="team-title">
       <h2 id="team-title" class="visually-hidden">Team</h2>
-      <div class="team__grid">
+      <div class="pair">
         <article class="person">
           <img src="assets/shubham-bansal.webp" alt="Portrait of Shubham Bansal" width="640" height="800" loading="lazy" decoding="async">
-          <h3>Shubham Bansal</h3>
+          <h3 class="subhead">Shubham Bansal</h3>
           <p>2026 Rhodes Scholar studying public policy at Oxford’s Blavatnik School of Government. Studied neuroscience and anthropology at the University of Washington, worked as a geriatric nursing assistant, and founded Narcare, a national overdose prevention and advocacy organization.</p>
         </article>
         <article class="person">
           <img src="assets/will-lieber.webp" alt="Portrait of Will Lieber" width="560" height="700" loading="lazy" decoding="async">
-          <h3>Will Lieber</h3>
+          <h3 class="subhead">Will Lieber</h3>
           <p>2026 Rhodes Scholar studying global health science and epidemiology at Oxford, and an incoming Stanford medical student. Studied health and incarceration at Duke and has worked as an EMT for over five years.</p>
         </article>
       </div>
     </section>
 
+    <section class="section page" id="location" aria-labelledby="location-title">
+      <h2 id="location-title" class="title">Seattle and Oxford.</h2>
+      <p class="prose">Pumpkin works from two places: Seattle, Washington, and Oxford in the United Kingdom.</p>
+      <div class="pair">
+        <article class="place">
+          <h3 class="subhead">Seattle</h3>
+          <p>Washington, United States</p>
+          <div class="map" data-map="https://www.openstreetmap.org/export/embed.html?bbox=-122.44%2C47.53%2C-122.22%2C47.68&amp;layer=mapnik" data-map-title="Map of Seattle, Washington">
+            <div class="map__ask">
+              <p>The map loads from OpenStreetMap once you allow it.</p>
+              <button type="button" class="button button--quiet button--small" data-map-show hidden>Show the maps</button>
+            </div>
+          </div>
+          <p class="place__link"><a href="https://www.openstreetmap.org/#map=11/47.6062/-122.3321" rel="noopener">Open Seattle in OpenStreetMap</a></p>
+        </article>
+        <article class="place">
+          <h3 class="subhead">Oxford</h3>
+          <p>United Kingdom</p>
+          <div class="map" data-map="https://www.openstreetmap.org/export/embed.html?bbox=-1.33%2C51.71%2C-1.18%2C51.79&amp;layer=mapnik" data-map-title="Map of Oxford, United Kingdom">
+            <div class="map__ask">
+              <p>The map loads from OpenStreetMap once you allow it.</p>
+              <button type="button" class="button button--quiet button--small" data-map-show hidden>Show the maps</button>
+            </div>
+          </div>
+          <p class="place__link"><a href="https://www.openstreetmap.org/#map=12/51.7520/-1.2577" rel="noopener">Open Oxford in OpenStreetMap</a></p>
+        </article>
+      </div>
+    </section>
+
     <section class="section contact page" id="contact" aria-labelledby="contact-title">
-      <h2 id="contact-title">Running a PACE program or working in dementia or psychiatric care? <span>We’d like to talk.</span></h2>
+      <h2 id="contact-title" class="statement">Running a PACE program or working in dementia or psychiatric care? <span>We’d like to talk.</span></h2>
       <p><a href="mailto:healthpumpkin@gmail.com">healthpumpkin@gmail.com</a></p>
     </section>
   </main>
 
   <footer class="site-footer page">
     <p>© 2026 Pumpkin</p>
+    <button type="button" class="text-button" data-cookie-settings hidden>Cookie settings</button>
   </footer>
 </body>
 </html>
