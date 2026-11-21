@@ -1,0 +1,516 @@
+/* Pumpkin POLST demo. Builds on styles.css; loaded only by demo.html.
+   Form conventions throughout: ruled rows, square corners, text controls. */
+
+.polst {
+  max-width: none;
+}
+
+.polst > * {
+  max-width: 46rem;
+}
+
+.polst__status,
+.polst__notice {
+  margin-top: var(--s-3);
+  font-size: 0.9375rem;
+}
+
+.polst__status:empty {
+  display: none;
+}
+
+.polst__notice {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  background: var(--sheet);
+  font-weight: 600;
+}
+
+.polst > .polst__notice:first-child {
+  margin: 0 0 var(--s-3);
+}
+
+/* Start: two ruled choices */
+
+.choices {
+  border-top: 1px solid var(--ink);
+}
+
+.choice {
+  display: block;
+  width: 100%;
+  padding: var(--s-3) 0;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.choice__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  font-size: var(--fs-lead);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  transition: color 160ms ease;
+}
+
+.choice__text {
+  display: block;
+  max-width: 34rem;
+  margin-top: 0.375rem;
+  color: var(--ink-soft);
+}
+
+.choice:hover:not(:disabled) .choice__title {
+  color: var(--accent);
+}
+
+.choice:disabled {
+  cursor: default;
+}
+
+.choice:disabled .choice__title {
+  color: var(--ink-soft);
+}
+
+.polst svg {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  transition: transform 220ms var(--ease-out);
+}
+
+.choice:hover:not(:disabled) svg,
+.pager__next:hover svg,
+.dock__send:hover:not(:disabled) svg {
+  transform: translateX(0.25rem);
+}
+
+/* The sheet and its pager, as on the directive walkthrough */
+
+.sheet {
+  padding: clamp(1.25rem, 0.9rem + 1.6vw, 2rem);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--sheet);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.sheet__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 var(--s-3);
+  padding-bottom: var(--s-2);
+  border-bottom: 1px solid var(--ink);
+}
+
+.sheet__label,
+.sheet__note,
+.polst__count {
+  color: var(--ink-soft);
+  font-size: var(--fs-small);
+}
+
+.sheet__label {
+  font-weight: 600;
+}
+
+.sheet__note {
+  margin-top: 0.75rem;
+}
+
+.polst__count {
+  font-weight: 600;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+  border-top: 1px solid var(--ink);
+}
+
+.pager--inline {
+  margin-top: var(--s-2);
+}
+
+.pager button,
+.dock__send,
+.dock__finish {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.pager__back,
+.dock__finish {
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+}
+
+.pager__next {
+  margin-left: auto;
+}
+
+.pager button:hover,
+.dock__send:hover:not(:disabled),
+.dock__finish:hover {
+  color: var(--accent);
+}
+
+/* Conversation */
+
+.log {
+  margin-top: var(--s-2);
+}
+
+.turn {
+  padding-block: 0.875rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.turn__who {
+  display: block;
+  color: var(--ink-soft);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.turn p {
+  margin-top: 0.125rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.turn--person p {
+  font-weight: 600;
+}
+
+.turn.is-pending p {
+  color: var(--ink-soft);
+}
+
+.dock {
+  margin-top: var(--s-3);
+}
+
+.replies {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.replies legend {
+  padding: 0 0 0.5rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+/* A reply to choose: a ruled line with a circle, as on a paper form */
+.reply {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0.6875rem 0 0.6875rem 1.875rem;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  background: none;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+}
+
+.reply:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.reply::before {
+  content: "";
+  position: absolute;
+  top: 0.875rem;
+  left: 0;
+  width: 1.0625rem;
+  height: 1.0625rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+}
+
+.reply:hover::before {
+  background: var(--ink);
+  box-shadow: inset 0 0 0 3px var(--sheet);
+}
+
+.dock__box,
+.review input[type="text"],
+.review textarea,
+.review select {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  background: var(--paper);
+  line-height: 1.5;
+}
+
+.dock__box,
+.review textarea {
+  display: block;
+  resize: vertical;
+}
+
+.dock__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+
+.dock__left,
+.dock__wait {
+  color: var(--ink-soft);
+  font-size: var(--fs-small);
+}
+
+.dock__send:disabled {
+  color: var(--ink-soft);
+  cursor: default;
+}
+
+/* The draft for clinician review */
+
+.polst > .review {
+  max-width: 52rem;
+}
+
+.review {
+  padding: clamp(1.25rem, 0.9rem + 1.6vw, 2rem);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--sheet);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.review__banner {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--ink);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.review__banner--foot {
+  margin-top: var(--s-4);
+}
+
+.review__meta,
+.review__lede,
+.review__none {
+  color: var(--ink-soft);
+  font-size: var(--fs-small);
+}
+
+.review__meta {
+  margin-top: 0.75rem;
+}
+
+.review__part {
+  margin-top: var(--s-4);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--ink);
+}
+
+.review__part > h3 b {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.review__lede {
+  max-width: 40rem;
+  margin-top: 0.375rem;
+}
+
+.review__part .sheet__label {
+  display: block;
+  margin-top: var(--s-3);
+}
+
+.field {
+  margin-top: var(--s-2);
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--rule);
+}
+
+.field__where {
+  color: var(--ink-soft);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.field__label {
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.field__controls {
+  display: grid;
+  grid-template-columns: 12.5rem minmax(0, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 34rem) {
+  .field__controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The status is always written out in words; weight marks what is settled. */
+.field[data-status="patient_stated"] .field__controls select:first-child {
+  font-weight: 600;
+}
+
+.field[data-status="not_discussed"] .field__controls > :last-child {
+  border-color: var(--rule);
+}
+
+.field__basis,
+.field__note {
+  margin-top: 0.375rem;
+  font-size: 0.9375rem;
+}
+
+.field__basis span,
+.field__note {
+  color: var(--ink-soft);
+}
+
+.review__pair {
+  max-width: none;
+  gap: var(--s-2) var(--s-4);
+}
+
+.review__pair > * {
+  max-width: none;
+}
+
+.notes {
+  margin-top: 0.375rem;
+}
+
+.notes li {
+  padding-block: 0.5rem;
+  border-top: 1px solid var(--rule);
+  overflow-wrap: anywhere;
+}
+
+.notes__topic {
+  color: var(--ink-soft);
+  font-size: var(--fs-small);
+}
+
+.review__none {
+  margin-top: 0.375rem;
+}
+
+.review__all {
+  margin-top: var(--s-3);
+}
+
+.review__all summary {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.review label.sheet__label {
+  margin-bottom: 0.375rem;
+}
+
+.review__check {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.75rem;
+  margin-top: var(--s-2);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.review__check input {
+  width: 1.125rem;
+  height: 1.125rem;
+  accent-color: var(--ink);
+}
+
+.review__state {
+  font-size: 0.9375rem;
+}
+
+.review__state.is-done {
+  font-weight: 600;
+}
+
+/* About */
+
+.polst-about__list {
+  max-width: 46rem;
+  margin-top: var(--s-2);
+  border-bottom: 1px solid var(--rule);
+}
+
+.polst-about__list li {
+  padding-block: 0.75rem;
+  border-top: 1px solid var(--rule);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .polst > *,
+  .turn {
+    animation: arrive 400ms var(--ease-out) backwards;
+  }
+}
+
+/* Printing gives the reviewer the draft and notes, with the label top and bottom. */
+@media print {
+  .site-header,
+  .site-footer,
+  .hero,
+  .polst-about,
+  .pager {
+    display: none;
+  }
+
+  .section {
+    padding: 0;
+  }
+
+  .review {
+    padding: 0;
+    border: 0;
+  }
+
+  .review__all:not([open]) {
+    display: none;
+  }
+}

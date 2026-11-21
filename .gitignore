@@ -6,3 +6,8 @@ DESIGN.md
 
 # Provenance notes for the portraits (kept locally)
 assets/*.json
+
+# Local secrets for the API worker: never commit
+worker/.dev.vars
+worker/.wrangler/
+worker/node_modules/

@@ -1,0 +1,32 @@
+# Pumpkin POLST demo API. No secrets belong in this file.
+# Secrets (set privately with `npx wrangler secret put NAME`):
+#   ANTHROPIC_API_KEY   your Claude API key
+#   SESSION_SECRET      any long random string; signs session tokens
+name = "pumpkin-polst"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+[vars]
+# Kill switch: set to "false" and redeploy (or edit in the dashboard) to stop all model calls.
+DEMO_ENABLED = "true"
+# Only pages served from these origins may call the API from a browser.
+ALLOWED_ORIGINS = "https://shubhambans.github.io"
+MODEL = "claude-sonnet-5-5"
+# Hard caps enforced by this code, per UTC day, across all visitors.
+DAILY_REQUEST_CAP = "300"
+DAILY_TOKEN_CAP = "600000"
+# Per visitor (by hashed IP address).
+IP_SESSIONS_PER_DAY = "6"
+IP_REQUESTS_PER_MIN = "12"
+
+[[durable_objects.bindings]]
+name = "LIMITER"
+class_name = "Limiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Limiter"]
+
+# Request bodies are never logged by this code; keep platform logging off as well.
+[observability]
+enabled = false

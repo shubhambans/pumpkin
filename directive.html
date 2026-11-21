@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Directive walkthrough | Pumpkin</title>
+  <meta name="description" content="One decision from a Pumpkin session, start to finish: the conversation with a psychiatrist on video, the directive for your state, the review, and the night it is needed. The person and her answers are made up.">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#F7F3EC">
+  <link rel="canonical" href="https://shubhambans.github.io/pumpkin/directive.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shubhambans.github.io/pumpkin/directive.html">
+  <meta property="og:title" content="Demo | Pumpkin">
+  <meta property="og:description" content="One decision from a Pumpkin session, start to finish. The person and her answers are made up.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23AF4C0C'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400..800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="demo.css">
+  <script src="site.js" defer></script>
+  <script src="demo.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header page">
+    <a class="wordmark" href="./">Pumpkin</a>
+    <nav class="site-nav" aria-label="Primary">
+      <ul role="list">
+        <li><a href="demo.html">Demo</a></li>
+        <li><a href="investors.html">Investors</a></li>
+        <li><a href="./#location">Location</a></li>
+        <li><a href="./#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero hero--page page" aria-labelledby="page-title">
+      <h1 id="page-title">One decision, start to finish.</h1>
+      <p class="lead">A real directive covers many decisions. This demo follows just one of them. Ruth is made up, and so are her answers.</p>
+    </section>
+
+    <section class="section demo page" aria-label="Demo" data-demo>
+      <ol class="demo__steps" role="list" hidden>
+        <li><button type="button" data-go="0"><b>1</b> <span>Conversation</span></button></li>
+        <li><button type="button" data-go="1"><b>2</b> <span>Directive</span></button></li>
+        <li><button type="button" data-go="2"><b>3</b> <span>Review</span></button></li>
+        <li><button type="button" data-go="3"><b>4</b> <span>Crisis</span></button></li>
+      </ol>
+
+      <!-- 1. The conversation -->
+      <article class="demo__panel" data-panel aria-labelledby="demo-1">
+        <div class="demo__side">
+          <div class="demo__text">
+            <h2 id="demo-1" class="statement" tabindex="-1">A guided conversation.</h2>
+            <p>Built on questions written by dementia and psychiatry clinicians, for the person or their family.</p>
+            <p>A telehealth psychiatrist is with you on video the whole time, and talks you through each decision before you make it.</p>
+            <p class="demo__scene">Ruth is 78. This spring she was told she has early Alzheimer’s disease. Her daughter, Dana, is beside her, and Dr. Morris is on the screen.</p>
+          </div>
+          <div class="pager" hidden>
+            <button type="button" class="pager__next" data-next>Next: the directive <svg viewBox="0 0 24 12" width="24" height="12" aria-hidden="true"><path d="M0 6h22M17 1l5 5-5 5"/></svg></button>
+          </div>
+        </div>
+        <form class="sheet" aria-label="Sample session" data-answers>
+          <div class="sheet__head">
+            <p class="sheet__label">Video visit</p>
+            <p class="sheet__people"><strong>Dr. Morris</strong>, psychiatrist, with Ruth and Dana</p>
+          </div>
+
+          <div class="outline">
+            <p class="sheet__label">What the full conversation covers</p>
+            <ol class="outline__list" role="list">
+              <li>Who speaks for me</li>
+              <li>What matters most to me</li>
+              <li>Where I want to be cared for</li>
+              <li class="is-here">If I am frightened or confused <span class="outline__here">This demo</span></li>
+              <li>Medicines I accept and refuse</li>
+              <li>Hospital stays and emergency care</li>
+              <li>Life support and resuscitation</li>
+              <li>Food and fluids near the end</li>
+              <li>Who to call, and who not to</li>
+              <li>My home, pets and bills while I am away</li>
+            </ol>
+          </div>
+
+          <div class="part">
+            <p class="says"><strong>Dr. Morris:</strong> “Hospitals are loud and unfamiliar, and that can be frightening. Let’s write down what helps you.”</p>
+            <fieldset>
+              <legend>If you were frightened or confused in the hospital, what would help most?</legend>
+              <label class="option"><input type="radio" name="calm" value="0"> Having my daughter with me</label>
+              <label class="option"><input type="radio" name="calm" value="1" checked> A quiet room and my own music</label>
+              <label class="option"><input type="radio" name="calm" value="2"> Someone explaining each step before it happens</label>
+            </fieldset>
+          </div>
+
+          <div class="part">
+            <p class="says"><strong>Dr. Morris:</strong> “Staff will be trying to keep you safe. You can tell them now what would make it worse.”</p>
+            <fieldset>
+              <legend>What should staff avoid?</legend>
+              <label class="option"><input type="radio" name="avoid" value="0" checked> Being held down or restrained</label>
+              <label class="option"><input type="radio" name="avoid" value="1"> Being left on my own</label>
+              <label class="option"><input type="radio" name="avoid" value="2"> Bright lights and noise at night</label>
+            </fieldset>
+          </div>
+
+          <div class="part">
+            <p class="says"><strong>Dr. Morris:</strong> “Sometimes calming medicine is offered. You get to say when that is all right with you.”</p>
+            <fieldset>
+              <legend>Calming medicine is:</legend>
+              <label class="option"><input type="radio" name="meds" value="0"> Fine, at the lowest dose that works</label>
+              <label class="option"><input type="radio" name="meds" value="1" checked> A last resort. Call my daughter first</label>
+              <label class="option"><input type="radio" name="meds" value="2"> Only if I am a danger to myself or others</label>
+            </fieldset>
+          </div>
+        </form>
+      </article>
+
+      <!-- 2. The directive -->
+      <article class="demo__panel" data-panel aria-labelledby="demo-2">
+        <div class="demo__side">
+          <div class="demo__text">
+            <h2 id="demo-2" class="statement" tabindex="-1">A directive that fits your state’s law.</h2>
+            <p>Pumpkin drafts it.</p>
+            <p class="demo__scene">Ruth’s words go into the form her state recognizes. Choose another state and the document changes with it: its name, the law behind it, what the person who speaks for her is called, and how it has to be signed.</p>
+          </div>
+          <div class="pager" hidden>
+            <button type="button" class="pager__back" data-back>Back</button>
+            <button type="button" class="pager__next" data-next>Next: the review <svg viewBox="0 0 24 12" width="24" height="12" aria-hidden="true"><path d="M0 6h22M17 1l5 5-5 5"/></svg></button>
+          </div>
+        </div>
+        <div class="sheet">
+          <div class="states" role="radiogroup" aria-labelledby="states-label" data-states hidden>
+            <p class="sheet__label" id="states-label">Ruth lives in</p>
+            <label><input type="radio" name="state" value="Washington" checked> Washington</label>
+            <label><input type="radio" name="state" value="Oregon"> Oregon</label>
+            <label><input type="radio" name="state" value="California"> California</label>
+            <label><input type="radio" name="state" value="Texas"> Texas</label>
+            <label><input type="radio" name="state" value="New York"> New York</label>
+            <label><input type="radio" name="state" value="Florida"> Florida</label>
+          </div>
+          <p class="doc__law"><span data-state-law>RCW 70.122</span>, <span data-status>draft</span></p>
+          <h3 class="doc__title" data-state-title>Health Care Directive</h3>
+          <p class="doc__who">Ruth A.</p>
+          <dl class="wishes">
+            <div>
+              <dt data-state-voice>My health care agent</dt>
+              <dd>My daughter, Dana.</dd>
+            </div>
+            <div>
+              <dt>If I am frightened or confused</dt>
+              <dd data-wish="calm">Please give me a quiet room and play my own music.</dd>
+              <dd data-wish="avoid">Do not hold me down or restrain me.</dd>
+              <dd data-wish="meds">Calming medicine is a last resort. Call my daughter first.</dd>
+            </div>
+            <div class="wishes__rest">
+              <dt>Eight more sections</dt>
+              <dd>Left out of this demo.</dd>
+            </div>
+            <div>
+              <dt>To be valid in <span data-state-name>Washington</span></dt>
+              <dd data-state-signing>Signed before two witnesses or a notary.</dd>
+              <dd data-state-note>Wishes about psychiatric care can go in a separate Mental Health Advance Directive.</dd>
+            </div>
+          </dl>
+          <p class="sheet__note">Simplified for this demo. Not legal advice.</p>
+        </div>
+      </article>
+
+      <!-- 3. The review -->
+      <article class="demo__panel" data-panel aria-labelledby="demo-3">
+        <div class="demo__side">
+          <div class="demo__text">
+            <h2 id="demo-3" class="statement" tabindex="-1">A telehealth psychiatrist reviews it with you before you sign.</h2>
+            <p class="demo__scene">Dr. Morris has been on the call from the first question. Before anything is signed she reads the directive back, asks Ruth to explain each choice in her own words, and answers Dana’s questions.</p>
+          </div>
+          <div class="pager" hidden>
+            <button type="button" class="pager__back" data-back>Back</button>
+            <button type="button" class="pager__next" data-next>Next: the crisis <svg viewBox="0 0 24 12" width="24" height="12" aria-hidden="true"><path d="M0 6h22M17 1l5 5-5 5"/></svg></button>
+          </div>
+        </div>
+        <div class="sheet">
+          <p class="sheet__label">Review with Dr. Morris, psychiatrist</p>
+          <ul class="checks" role="list">
+            <li>Read back in plain language</li>
+            <li>Ruth explains each choice in her own words</li>
+            <li>Dana’s questions answered</li>
+            <li>Ruth confirms these are her wishes</li>
+          </ul>
+          <button type="button" class="signline" data-sign hidden>Sign here</button>
+          <p class="signline signline--done" data-signed><strong>Ruth A.</strong></p>
+          <p class="sheet__note" data-signed-note>Signed on the call with Dr. Morris. Then, as <span data-state-name>Washington</span> requires: <span data-state-rule>two witnesses or a notary</span>.</p>
+        </div>
+      </article>
+
+      <!-- 4. The crisis -->
+      <article class="demo__panel" data-panel aria-labelledby="demo-4">
+        <div class="demo__side">
+          <div class="demo__text">
+            <h2 id="demo-4" class="statement" tabindex="-1">There in a crisis.</h2>
+            <p>Shared with your family and care team, one quick lookup away, and we track whether it was seen and followed.</p>
+            <p class="demo__scene">Three months later, 2:10 am. Ruth is brought to an emergency department across town, frightened and unable to say why she is there. Dana’s phone is off. No one on shift has met her.</p>
+            <p class="demo__stakes">Without a plan, care defaults to the most aggressive option.</p>
+          </div>
+          <div class="pager" hidden>
+            <button type="button" class="pager__back" data-back>Back</button>
+            <button type="button" class="pager__next" data-restart>Start over</button>
+          </div>
+        </div>
+        <div class="sheet">
+          <p class="sheet__label">Emergency department, 2:10 am</p>
+          <div class="lookup">
+            <p class="lookup__who">Ruth A., 78</p>
+            <button type="button" class="lookup__go" data-lookup hidden>Look her up</button>
+          </div>
+          <p class="sheet__found"><span data-unknown hidden>Nothing on file. No one here knows her.</span><span data-found>Advance directive on file, reviewed and signed.</span></p>
+          <dl class="known">
+            <div>
+              <dt>Who can speak for her</dt>
+              <dd><span data-unknown hidden>Not known</span><span data-found>Dana, her daughter. Call first.</span></dd>
+            </div>
+            <div>
+              <dt>What calms her</dt>
+              <dd><span data-unknown hidden>Not known</span><span data-found data-team="calm">A quiet room and her own music.</span></dd>
+            </div>
+            <div>
+              <dt>What to avoid</dt>
+              <dd><span data-unknown hidden>Not known</span><span data-found data-team="avoid">Holding her down or restraining her.</span></dd>
+            </div>
+            <div>
+              <dt>Calming medicine</dt>
+              <dd><span data-unknown hidden>Not known</span><span data-found data-team="meds">A last resort. Call her daughter first.</span></dd>
+            </div>
+          </dl>
+          <dl class="log" data-result>
+            <div>
+              <dt>Shared with</dt>
+              <dd>Dana and Ruth’s care team</dd>
+            </div>
+            <div>
+              <dt>Seen</dt>
+              <dd>2:14 am, by the emergency clinician</dd>
+            </div>
+            <div>
+              <dt>Followed</dt>
+              <dd>Yes</dd>
+            </div>
+          </dl>
+        </div>
+      </article>
+    </section>
+
+    <section class="section contact page" aria-labelledby="contact-title">
+      <h2 id="contact-title" class="statement">Running a PACE program or working in dementia or psychiatric care? <span>We’d like to talk.</span></h2>
+      <p><a href="mailto:healthpumpkin@gmail.com">healthpumpkin@gmail.com</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer page">
+    <p>© 2026 Pumpkin</p>
+    <button type="button" class="text-button" data-cookie-settings hidden>Cookie settings</button>
+  </footer>
+</body>
+</html>
