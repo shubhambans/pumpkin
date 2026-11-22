@@ -562,51 +562,10 @@
 }
 
 /* ------------------------------------------------------------------
-   The demo page is set like a printed form: Times New Roman, ruled
-   lines, square boxes, no fills. Everything below belongs to
-   <body class="paper"> and overrides the shared look.
+   The demo is set like a printed form: ruled lines, square boxes,
+   no fills. The typeface and the plain buttons come from styles.css;
+   everything below belongs to <body class="paper">.
    ------------------------------------------------------------------ */
-
-.paper {
-  --font: "Times New Roman", Times, "Liberation Serif", serif;
-  --fs-small: 1rem;
-  --fs-body: clamp(1.1875rem, 1.15rem + 0.16vw, 1.3125rem);
-  --radius: 0;
-  line-height: 1.5;
-}
-
-.paper h1,
-.paper h2,
-.paper h3,
-.paper h4,
-.paper .wordmark,
-.paper .subhead,
-.paper .choice__title {
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-.paper :focus-visible {
-  border-radius: 0;
-}
-
-/* Nothing on this page is filled: the notice and its buttons are outlined. */
-.paper .cookie {
-  border-width: 2px 0;
-  background: var(--paper);
-}
-
-.paper .button {
-  border: 1px solid var(--ink);
-  background: none;
-  color: var(--ink);
-}
-
-.paper .button:hover {
-  background: none;
-  border-color: var(--accent);
-  color: var(--accent);
-}
 
 .paper .sheet,
 .paper .review {
