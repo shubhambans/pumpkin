@@ -14,8 +14,9 @@ import { DurableObject } from "cloudflare:workers";
 const MAX_USER_REPLIES = 5;
 const MAX_USER_CHARS = 600;
 const MAX_ASSISTANT_CHARS = 1500;
-const CHAT_MAX_TOKENS = 350;
-const REVIEW_MAX_TOKENS = 2200;
+// Generous, because any reasoning the model does counts against this too. Replies are trimmed below.
+const CHAT_MAX_TOKENS = 1200;
+const REVIEW_MAX_TOKENS = 5000;
 const REVIEWS_PER_SESSION = 2;
 const SESSION_TTL = 60 * 60; // one hour
 const DAY = 24 * 60 * 60;
@@ -225,7 +226,14 @@ async function callClaude(env, body) {
   }
   if (!response.ok) {
     // 429 here includes the provider's own spend and rate limits.
-    return { error: response.status === 429 || response.status === 402 ? "provider_limit" : "upstream" };
+    let detail = String(response.status);
+    try {
+      const problem = (await response.json()).error || {};
+      detail += ` ${problem.type || ""}: ${String(problem.message || "").slice(0, 200)}`;
+    } catch {
+      /* keep the status only */
+    }
+    return { error: response.status === 429 || response.status === 402 ? "provider_limit" : "upstream", detail };
   }
   const data = await response.json();
   const used = (data.usage?.input_tokens || 0) + (data.usage?.output_tokens || 0);
@@ -386,7 +394,7 @@ export default {
             ? " They have one reply left after this, so ask the single most useful remaining question."
             : "");
       const result = await callClaude(env, { max_tokens: CHAT_MAX_TOKENS, system, messages: forModel });
-      if (result.error) return json({ error: result.error }, result.error === "provider_limit" ? 429 : 502, origin);
+      if (result.error) return json({ error: result.error, detail: result.detail }, result.error === "provider_limit" ? 429 : 502, origin);
       await limiter.add(`tok:${day}`, result.used, DAY * 2);
       const reply = (result.data.content || []).filter((block) => block.type === "text").map((block) => block.text).join("\n").trim().slice(0, MAX_ASSISTANT_CHARS);
       if (!reply) return json({ error: "upstream" }, 502, origin);
@@ -398,10 +406,10 @@ export default {
       max_tokens: REVIEW_MAX_TOKENS,
       system: REVIEW_SYSTEM,
       tools: [REVIEW_TOOL],
-      tool_choice: { type: "tool", name: "record_review" },
+      tool_choice: { type: "auto" },
       messages: [{ role: "user", content: `Here is the conversation. Record the draft for clinician review.\n\n${conversation}` }],
     });
-    if (result.error) return json({ error: result.error }, result.error === "provider_limit" ? 429 : 502, origin);
+    if (result.error) return json({ error: result.error, detail: result.detail }, result.error === "provider_limit" ? 429 : 502, origin);
     await limiter.add(`tok:${day}`, result.used, DAY * 2);
     const tool = (result.data.content || []).find((block) => block.type === "tool_use");
     if (!tool) return json({ error: "upstream" }, 502, origin);

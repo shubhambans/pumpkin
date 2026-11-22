@@ -38,7 +38,7 @@ Run these from this `worker` folder, in your own terminal.
 Enforced by this Worker's code, whatever the browser sends:
 
 - Five user replies per conversation. Each session token buys at most five model replies and two drafts.
-- 600 characters per reply; 350 output tokens per reply; 2,200 for a draft.
+- 600 characters per reply; 1,200 output tokens per reply; 5,000 for a draft.
 - Per visitor (hashed IP address): 6 conversations a day, 12 requests a minute.
 - Across everyone, per UTC day: 300 model calls and 600,000 tokens. After that the page shows "budget used for today".
 - Only pages on `ALLOWED_ORIGINS` can call it from a browser. This stops other websites embedding it. It does not stop a script that fakes the header, which is what the caps above are for.

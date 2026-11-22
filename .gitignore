@@ -11,3 +11,6 @@ assets/*.json
 worker/.dev.vars
 worker/.wrangler/
 worker/node_modules/
+
+# Local record of secrets: never commit
+worker/SECRETS.local.txt
