@@ -742,3 +742,48 @@
 .notes--ordered li {
   padding-left: 0.25rem;
 }
+
+/* The demo's forward actions share the site's button: a line that inks in orange. */
+.pager__next,
+.dock__send {
+  position: relative;
+  padding-right: 0.25rem;
+}
+
+.pager__next::after,
+.dock__send::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -2px;
+  height: 4px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 320ms var(--ease-out);
+}
+
+.pager button.pager__next:hover,
+.dock__send:hover:not(:disabled) {
+  color: var(--ink);
+}
+
+.pager__next:hover::after,
+.pager__next:focus-visible::after,
+.dock__send:hover:not(:disabled)::after {
+  transform: scaleX(1);
+}
+
+.dock__send {
+  border-bottom: 2px solid var(--ink);
+}
+
+.dock__send:disabled {
+  border-bottom-color: var(--rule);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pager__next::after,
+  .dock__send::after {
+    transition: none;
+  }
+}
