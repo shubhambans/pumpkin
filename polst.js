@@ -299,7 +299,7 @@
       put(view.dock, el("p", { class: "dock__wait", role: "status", text: "Drafting the notes for clinician review…" }));
       try {
         const data = await api("/review", { token: session.token, messages: sent });
-        reviewView(data.review, [{ role: "assistant", content: greeting }, ...sent], "A live AI conversation");
+        reviewView(data.review, [{ role: "assistant", content: greeting }, ...sent], "A live AI conversation", (outcome) => api("/outcome", { token: session.token, ...outcome }));
       } catch (error) {
         put(view.dock, el("p", { class: "polst__notice", role: "alert", text: explain(error.message) }), nextButton("Try the draft again", toReview));
       }
@@ -364,7 +364,8 @@
 
   /* ---------- clinician review ---------- */
 
-  function reviewView(review, conversation, source) {
+  // `save` is given only for live drafts. It sends counts, never text.
+  function reviewView(review, conversation, source, save) {
     const fieldById = new Map(review.fields.map((field) => [field.id, field]));
     const conflicts = [...review.conflicts];
     if (fieldById.get("section_a_cpr")?.value === "yes" && ["selective", "comfort"].includes(fieldById.get("section_b_level")?.value)) {
@@ -422,8 +423,34 @@
       const changed = entries.filter((entry) => entry.changed).length;
       return { changed, kept: entries.length - changed };
     };
+    const elapsed = () => Math.max(1, Math.round((Date.now() - opened) / 1000));
+    const length = (seconds) => (seconds < 60 ? `${seconds} seconds` : `${Math.floor(seconds / 60)} min ${seconds % 60} s`);
+    const totals = el("div", { class: "review__totals", role: "status" });
+    const showTotals = (data, lead) => {
+      if (!data || !data.reviews) return put(totals, el("p", { class: "review__lede", text: "No reviews of live drafts have been saved yet." }));
+      const all = Object.values(data.fields).reduce((sum, field) => sum + field.kept + field.changed, 0);
+      const kept = Object.values(data.fields).reduce((sum, field) => sum + field.kept, 0);
+      put(
+        totals,
+        el("p", { class: "review__tally", text: `${lead}Across ${data.reviews} saved ${data.reviews === 1 ? "review" : "reviews"} of live drafts, ${kept} of ${all} fields (${Math.round((kept / all) * 100)}%) were kept as the AI drafted them. Average time to review: ${length(Math.round(data.seconds / data.reviews))}.` }),
+        el("ul", { class: "notes", role: "list" }, FIELDS.filter((meta) => data.fields[meta.id]).map((meta) => el("li", {}, el("b", { text: `${meta.where}. ` }), `${meta.label}: kept ${data.fields[meta.id].kept}, changed ${data.fields[meta.id].changed}`)))
+      );
+    };
+    let saved = false;
+    const saveOutcome = async () => {
+      if (!save || saved) return;
+      saved = true;
+      try {
+        const data = await save({ changed: entries.filter((entry) => entry.changed).map((entry) => entry.meta.id), seconds: elapsed() });
+        showTotals(data.totals, "Saved. ");
+      } catch (error) {
+        if (error.message !== "already_saved") saved = false;
+        put(totals, el("p", { class: "review__lede", text: error.message === "already_saved" ? "This draft’s counts were already saved." : "The counts could not be saved just now." }));
+      }
+    };
+    if (API) api("/totals").then((data) => showTotals(data, "")).catch(() => {});
     const took = () => {
-      const seconds = Math.max(1, Math.round((Date.now() - opened) / 1000));
+      const seconds = elapsed();
       return seconds < 60 ? `${seconds} seconds` : `${Math.floor(seconds / 60)} min ${seconds % 60} s`;
     };
 
@@ -445,13 +472,43 @@
         ? `Marked as reviewed in this demo${reviewer.value.trim() ? ` by ${reviewer.value.trim()}` : ""}, ${new Date().toLocaleString()}. Kept as drafted: ${kept} of ${entries.length} fields. Changed: ${changed}. Time from opening the draft to marking it reviewed: ${took()}. The review is simulated: no clinician was verified, and nothing has been signed.`
         : "Not reviewed.";
       state.classList.toggle("is-done", done.checked);
+      if (done.checked) saveOutcome();
     }
     done.addEventListener("change", mark);
     reviewer.addEventListener("input", () => done.checked && mark());
     edited();
 
+    // Worked out from the draft as the AI wrote it, so the reviewer knows where to begin.
+    const drafted = (id) => fieldById.get(id) || { status: "not_discussed", value: "" };
+    const settled = (id) => drafted(id).status === "patient_stated";
+    const count = (status) => FIELDS.filter((meta) => drafted(meta.id).status === status).length;
+    const first = [];
+    if (review.respondent !== "patient") first.push(["Who answered", "The replies may not be the patient’s own. Nothing here can be taken as the patient’s wish until it is heard from them."]);
+    conflicts.forEach((text) => first.push(["Conflict", text]));
+    if (!settled("section_a_cpr")) first.push(["Section A", "CPR has no settled answer. This is the order that applies when there is no pulse and no breathing, so it is the first thing to resolve."]);
+    if (!settled("section_b_level")) first.push(["Section B", "The level of medical interventions has no settled answer."]);
+    if (settled("section_a_cpr") && drafted("section_a_cpr").value === "no" && drafted("section_b_level").value === "full")
+      first.push(["Sections A and B", "CPR is declined and Full Treatment is chosen. The form allows this pairing; confirm it is what the person means."]);
+    if (!settled("advance_documents")) first.push(["Section C", "No health care agent or directive is recorded. Ask who should decide if the person cannot speak for themselves."]);
+    if (!settled("discussed_with")) first.push(["Section C", "It is not settled who took part in this discussion."]);
+    if (!settled("nutrition")) first.push(["Page 2", "Medically assisted nutrition is not settled. On this form it is a preference, not an order."]);
+    if (!settled("conditions_goals")) first.push(["Page 1", "The person’s conditions and goals are not recorded in their own words."]);
+    const figure = (n, label) => el("div", { class: "glance__figure" }, el("span", { class: "glance__n", text: String(n) }), el("span", { class: "glance__label", text: label }));
+    const glance = [
+      el("div", { class: "glance" }, figure(count("patient_stated"), "stated by the patient"), figure(count("needs_clarification"), "need clarification"), figure(count("not_discussed"), "not discussed")),
+      el("p", { class: "review__lede", text: `Out of the ${FIELDS.length} parts of the form this demo covers, as the AI drafted them.` }),
+      el(
+        "div",
+        { class: "group" },
+        el("h4", { class: "review__sub", text: "Where to start" }),
+        first.length
+          ? el("ol", { class: "notes notes--ordered" }, first.map(([where, text]) => el("li", {}, el("b", { text: `${where}. ` }), text)))
+          : el("p", { class: "review__none", text: "Nothing stands out in the draft. Confirm each answer with the person in their own words." })
+      ),
+    ];
+
     const questions = conversation.filter((message) => message.role === "assistant").map((message) => message.content);
-    const section = (number, title, ...body) => el("section", { class: "review__part" }, el("h3", { class: "subhead" }, el("b", { text: `${number} ` }), title), body);
+    const section = (number, title, ...body) => el("section", { class: "review__part" }, el("h3", { class: "subhead" }, el("b", { text: `${number}. ` }), title), body);
 
     show(
       el(
@@ -463,8 +520,10 @@
           ? el("p", { class: "polst__notice", text: "The replies may not have come from the patient. Nothing below is marked as stated by the patient; confirm every item with the patient directly." })
           : null,
 
+        section(1, "At a glance", glance),
+
         section(
-          1,
+          2,
           "Draft mapping to the form",
           el("p", { class: "review__lede", text: "Each field is marked as stated by the patient, needing clarification, or not discussed. Gaps are left empty. A clinician can change any of it." }),
           group("Page 1", "about the individual", fixed("Name and date of birth", "Not collected in this demo.")),
@@ -475,7 +534,7 @@
         ),
 
         section(
-          2,
+          3,
           "Summary",
           el(
             "div",
@@ -486,7 +545,7 @@
         ),
 
         section(
-          3,
+          4,
           "Conversation notes",
           block(
             "In their words",
@@ -497,7 +556,7 @@
         ),
 
         section(
-          4,
+          5,
           "Conflicts, uncertainties and questions for the clinician",
           block("Conflicts", list(conflicts, "None noted.")),
           block("Uncertainties from the conversation", list(review.uncertainties, "None noted.")),
@@ -506,14 +565,14 @@
         ),
 
         section(
-          5,
+          6,
           "Clinician review (simulated)",
           el("p", { class: "review__lede", text: "In this demo anyone can play the reviewer. No clinician is signed in or verified, so marking the draft as reviewed does not approve it, sign it, or make it an order. How long a real review takes depends on the patient and the clinician." }),
           el("label", { for: "reviewer", class: "sheet__label", text: "Reviewer" }),
           reviewer,
           el("label", { for: "review-notes", class: "sheet__label", text: "Reviewer’s notes" }),
           notes,
-          block("What the reviewer changed", tally, el("p", { class: "review__lede", text: "Each field in part 1 shows whether it stands as the AI drafted it or was changed, with the AI’s original beside it. The count stays on this page and in the printout; the demo does not store it." })),
+          block("What the reviewer changed", tally, el("p", { class: "review__lede", text: "Each field in part 2 shows whether it stands as the AI drafted it or was changed, with the AI’s original beside it. " + (save ? "When this draft is marked as reviewed, the counts and the review time are saved once, as numbers only: no replies, no field contents, nothing about you." : "Ruth’s sample story sends nothing, so it is not counted in the totals.") }), sub("Totals so far"), totals),
           el("label", { class: "review__check", for: "review-done" }, done, " Mark as reviewed (simulated)"),
           state
         ),

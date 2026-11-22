@@ -53,7 +53,7 @@ All the numbers are in `wrangler.toml` and can be changed there.
 
 ## Privacy
 
-The Worker does not store or log conversation text. It keeps counters only, keyed by a hash of the visitor's address, and they expire within two days. Replies are sent to Anthropic's API to generate the response. This demo has not had the privacy, security and clinical review needed for real patient information.
+The Worker does not store or log conversation text. It keeps counters only, keyed by a hash of the visitor's address, and they expire within two days. The one thing it keeps for longer is the review totals: when a live draft is marked as reviewed, `POST /outcome` adds to a count of fields kept or changed and the seconds the review took (once per session, numbers only), and `GET /totals` returns the sums. Replies are sent to Anthropic's API to generate the response. This demo has not had the privacy, security and clinical review needed for real patient information.
 
 ## Test locally without a key
 

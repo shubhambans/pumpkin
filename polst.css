@@ -560,3 +560,235 @@
     display: none;
   }
 }
+
+/* ------------------------------------------------------------------
+   The demo page is set like a printed form: Times New Roman, ruled
+   lines, square boxes, no fills. Everything below belongs to
+   <body class="paper"> and overrides the shared look.
+   ------------------------------------------------------------------ */
+
+.paper {
+  --font: "Times New Roman", Times, "Liberation Serif", serif;
+  --fs-small: 1rem;
+  --fs-body: clamp(1.1875rem, 1.15rem + 0.16vw, 1.3125rem);
+  --radius: 0;
+  line-height: 1.5;
+}
+
+.paper h1,
+.paper h2,
+.paper h3,
+.paper h4,
+.paper .wordmark,
+.paper .subhead,
+.paper .choice__title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.paper :focus-visible {
+  border-radius: 0;
+}
+
+/* Nothing on this page is filled: the notice and its buttons are outlined. */
+.paper .cookie {
+  border-width: 2px 0;
+  background: var(--paper);
+}
+
+.paper .button {
+  border: 1px solid var(--ink);
+  background: none;
+  color: var(--ink);
+}
+
+.paper .button:hover {
+  background: none;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.paper .sheet,
+.paper .review {
+  padding: var(--s-3) 0 0;
+  border: 0;
+  border-top: 3px double var(--ink);
+  background: none;
+  font-size: inherit;
+}
+
+.paper .polst__notice {
+  padding: 0.75rem 0;
+  border: 0;
+  border-block: 1px solid var(--ink);
+  background: none;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.paper .review__banner {
+  padding: 0.625rem 0;
+  border: 0;
+  border-block: 1px solid var(--ink);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Small capitals mark the labels a form would print. */
+.paper .sheet__label,
+.paper .turn__who,
+.paper .polst__count,
+.paper .replies legend,
+.paper .review__sub,
+.paper .glance__label {
+  font-variant-caps: small-caps;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.paper .turn--person p {
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* A reply to choose is a box to tick. */
+.paper .reply::before {
+  top: 0.9375rem;
+  border-width: 1px;
+  border-radius: 0;
+}
+
+.paper .reply:hover::before {
+  box-shadow: inset 0 0 0 3px var(--paper);
+}
+
+/* Blanks to fill in, as on paper: a line under the entry, nothing around it. */
+.paper .dock__box,
+.paper .review input[type="text"],
+.paper .review textarea,
+.paper .review select {
+  padding: 0.375rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+  border-radius: 0;
+  background: none;
+}
+
+.paper .dock__box,
+.paper .review textarea {
+  padding: 0.5rem 0.625rem;
+  border: 1px solid var(--ink);
+}
+
+.paper .review__check input {
+  appearance: none;
+  flex: none;
+  width: 1.0625rem;
+  height: 1.0625rem;
+  border: 1px solid var(--ink);
+}
+
+.paper .review__check input:checked {
+  box-shadow: inset 0 0 0 3px var(--paper);
+  background: var(--ink);
+}
+
+.paper .review__part {
+  border-top-width: 1px;
+}
+
+.paper .review__part > h3 b {
+  color: inherit;
+}
+
+/* Group labels sit in the margin beside what they name, like the side notes on a statute. */
+.paper .review__sub {
+  margin: 0;
+  padding: 0.75rem 0 0;
+  border-top: 1px solid var(--ink);
+  background: none;
+  font-size: 1.0625rem;
+}
+
+@media (min-width: 48rem) {
+  .paper .review__part > .group,
+  .paper .review__part > .review__pair > .group {
+    display: grid;
+    grid-template-columns: 10.5rem minmax(0, 1fr);
+    column-gap: var(--s-3);
+    border-top: 1px solid var(--ink);
+  }
+
+  .paper .review__part > .review__pair {
+    display: block;
+  }
+
+  .paper .group > .review__sub {
+    grid-column: 1;
+    grid-row: 1 / span 12;
+    border-top: 0;
+  }
+
+  .paper .group > :not(.review__sub) {
+    grid-column: 2;
+  }
+
+  .paper .group > .review__none,
+  .paper .group > .review__tally {
+    margin-top: 0;
+    padding-top: 0.75rem;
+  }
+
+  .paper .group > .notes > li:first-child {
+    padding-top: 0.75rem;
+  }
+}
+
+.paper .field.is-changed .field__track {
+  color: inherit;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.paper .field__track {
+  font-style: italic;
+}
+
+/* At a glance: three figures on a ruled line. */
+.glance {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: var(--s-3);
+  border-block: 1px solid var(--ink);
+}
+
+.glance__figure {
+  padding: 0.75rem 0.75rem 0.875rem 0;
+}
+
+.glance__figure + .glance__figure {
+  padding-left: 0.75rem;
+  border-left: 1px solid var(--rule);
+}
+
+.glance__n {
+  display: block;
+  font-size: clamp(2.5rem, 2rem + 2.4vw, 4rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+}
+
+.glance__label {
+  display: block;
+  margin-top: 0.25rem;
+  line-height: 1.2;
+}
+
+.notes--ordered {
+  padding-left: 1.25rem;
+}
+
+.notes--ordered li {
+  padding-left: 0.25rem;
+}

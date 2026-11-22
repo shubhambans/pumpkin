@@ -20,6 +20,8 @@ const REVIEW_MAX_TOKENS = 5000;
 const REVIEWS_PER_SESSION = 2;
 const SESSION_TTL = 60 * 60; // one hour
 const DAY = 24 * 60 * 60;
+const STATS_KEY = "stats:v1";
+const NEVER = 8e15; // the hourly clean-up removes entries whose `exp` has passed; totals are kept
 
 const FORM = "Washington POLST (Portable Orders for Life-Sustaining Treatment), REV 04/2021";
 
@@ -146,6 +148,24 @@ export class Limiter extends DurableObject {
   async read(key) {
     const entry = await this.ctx.storage.get(key);
     return entry && entry.exp > Date.now() ? entry.n : 0;
+  }
+
+  // Review outcomes: numbers only. No conversation text, field values or visitor details.
+  async record(changed, seconds) {
+    const stats = (await this.ctx.storage.get(STATS_KEY)) || { exp: NEVER, reviews: 0, seconds: 0, fields: {} };
+    stats.reviews += 1;
+    stats.seconds += seconds;
+    for (const id of FIELD_IDS) {
+      const field = stats.fields[id] || { kept: 0, changed: 0 };
+      field[changed.includes(id) ? "changed" : "kept"] += 1;
+      stats.fields[id] = field;
+    }
+    await this.ctx.storage.put(STATS_KEY, stats);
+  }
+
+  async totals() {
+    const stats = (await this.ctx.storage.get(STATS_KEY)) || { reviews: 0, seconds: 0, fields: {} };
+    return { reviews: stats.reviews, seconds: stats.seconds, fields: stats.fields };
   }
 
   async alarm() {
@@ -332,6 +352,8 @@ export default {
       return json({ state, form: FORM, maxReplies: MAX_USER_REPLIES, maxChars: MAX_USER_CHARS }, 200, origin);
     }
 
+    if (request.method === "GET" && url.pathname === "/totals") return json(await limiter.totals(), 200, origin);
+
     if (request.method !== "POST") return json({ error: "not_found" }, 404, origin);
     if (!enabled) return json({ error: "disabled" }, 503, origin);
     if (Number(request.headers.get("content-length") || 0) > 20000) return json({ error: "too_large" }, 413, origin);
@@ -356,6 +378,20 @@ export default {
       ]);
       if (!taken.ok) return json({ error: taken.name }, 429, origin);
       return json({ token: await makeToken(env), greeting: GREETING, maxReplies: MAX_USER_REPLIES, maxChars: MAX_USER_CHARS }, 200, origin);
+    }
+
+    // What the reviewer kept and changed, once per session that produced a draft. Counts only.
+    if (url.pathname === "/outcome") {
+      const session = await readToken(env, body.token);
+      if (!session) return json({ error: "bad_session" }, 401, origin);
+      if (!Array.isArray(body.changed) || body.changed.length > FIELD_IDS.length) return json({ error: "bad_request" }, 400, origin);
+      const changed = FIELD_IDS.filter((id) => body.changed.includes(id));
+      const seconds = Math.min(3600, Math.max(1, Math.round(Number(body.seconds)) || 1));
+      if ((await limiter.read(`rev:${session}`)) < 1) return json({ error: "bad_request" }, 400, origin);
+      const once = await limiter.take([perMinute, { key: `out:${session}`, limit: 1, ttl: SESSION_TTL * 2, name: "already_saved" }]);
+      if (!once.ok) return json({ error: once.name }, 429, origin);
+      await limiter.record(changed, seconds);
+      return json({ saved: true, totals: await limiter.totals() }, 200, origin);
     }
 
     if (url.pathname !== "/chat" && url.pathname !== "/review") return json({ error: "not_found" }, 404, origin);
