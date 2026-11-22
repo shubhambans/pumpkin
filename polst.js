@@ -372,50 +372,83 @@
     }
     const open = review.fields.filter((field) => field.status !== "patient_stated").map((field) => FIELDS.find((item) => item.id === field.id)).filter(Boolean);
 
-    const rows = FIELDS.map((meta) => {
+    // What the AI drafted is kept beside each field, so the reviewer's changes can be counted.
+    const shown = (meta, value) => {
+      const text = meta.options ? meta.options[value] : value;
+      return text ? `“${text}”` : "no draft value";
+    };
+    const entries = FIELDS.map((meta) => {
       const field = fieldById.get(meta.id) || { status: "not_discussed", value: "", basis: "", note: "" };
-      const status = el("select", { "aria-label": `Status: ${meta.label}` }, Object.entries(STATUS).map(([value, label]) => el("option", { value, selected: value === field.status, text: label })));
+      const drafted = {
+        status: STATUS[field.status] ? field.status : "not_discussed",
+        value: meta.options ? (meta.options[field.value] ? field.value : "") : String(field.value || ""),
+      };
+      const status = el("select", { "aria-label": `Status: ${meta.label}` }, Object.entries(STATUS).map(([value, label]) => el("option", { value, selected: value === drafted.status, text: label })));
       const value = meta.options
-        ? el("select", { "aria-label": `Draft: ${meta.label}` }, el("option", { value: "", text: "No draft value" }), Object.entries(meta.options).map(([key, label]) => el("option", { value: key, selected: key === field.value, text: label })))
-        : el("input", { type: "text", value: field.value, "aria-label": `Draft: ${meta.label}`, placeholder: "No draft value" });
+        ? el("select", { "aria-label": `Draft: ${meta.label}` }, el("option", { value: "", text: "No draft value" }), Object.entries(meta.options).map(([key, label]) => el("option", { value: key, selected: key === drafted.value, text: label })))
+        : el("input", { type: "text", value: drafted.value, "aria-label": `Draft: ${meta.label}`, placeholder: "No draft value" });
+      const track = el("p", { class: "field__track", text: "As the AI drafted it." });
       const row = el(
         "div",
-        { class: "field", "data-status": field.status },
-        el("p", { class: "field__where", text: meta.where }),
+        { class: "field", "data-status": drafted.status },
         el("p", { class: "field__label", text: meta.label }),
         el("div", { class: "field__controls" }, status, value),
         field.basis ? el("p", { class: "field__basis" }, el("span", { text: "Their words: " }), `“${field.basis}”`) : null,
-        field.note ? el("p", { class: "field__note", text: field.note }) : null
+        field.note ? el("p", { class: "field__note", text: field.note }) : null,
+        track
       );
-      status.addEventListener("change", () => {
+      const entry = { meta, row, changed: false };
+      const check = () => {
+        entry.changed = status.value !== drafted.status || value.value.trim() !== drafted.value.trim();
+        row.classList.toggle("is-changed", entry.changed);
         row.dataset.status = status.value;
+        track.textContent = entry.changed ? `Changed by the reviewer. The AI drafted: ${STATUS[drafted.status]}, ${shown(meta, drafted.value)}.` : "As the AI drafted it.";
         edited();
-      });
-      value.addEventListener("input", edited);
-      return row;
+      };
+      status.addEventListener("change", check);
+      value.addEventListener("input", check);
+      return entry;
     });
 
-    const fixed = (where, label, text) => el("div", { class: "field field--fixed" }, el("p", { class: "field__where", text: where }), el("p", { class: "field__label", text: label }), el("p", { class: "field__note", text }));
-    const list = (items, empty) => (items.length ? el("ul", { class: "notes", role: "list" }, items.map((item) => el("li", { text: item }))) : el("p", { class: "review__none", text: empty }));
+    const sub = (text) => el("h4", { class: "review__sub", text });
+    const fixed = (label, text) => el("div", { class: "field field--fixed" }, el("p", { class: "field__label", text: label }), el("p", { class: "field__note", text }));
+    const group = (where, title, ...extra) => el("div", { class: "group" }, sub(`${where}: ${title}`), entries.filter((entry) => entry.meta.where === where).map((entry) => entry.row), extra);
+    const block = (title, ...body) => el("div", { class: "group" }, sub(title), body);
+    const list = (items, empty) => (items.length ? el("ul", { class: "notes", role: "list" }, items.map((item) => el("li", {}, item))) : el("p", { class: "review__none", text: empty }));
+
+    const opened = Date.now();
+    const tally = el("p", { class: "review__tally", role: "status" });
+    const counts = () => {
+      const changed = entries.filter((entry) => entry.changed).length;
+      return { changed, kept: entries.length - changed };
+    };
+    const took = () => {
+      const seconds = Math.max(1, Math.round((Date.now() - opened) / 1000));
+      return seconds < 60 ? `${seconds} seconds` : `${Math.floor(seconds / 60)} min ${seconds % 60} s`;
+    };
 
     const state = el("p", { class: "review__state", role: "status", text: "Not reviewed." });
     const reviewer = el("input", { type: "text", id: "reviewer", autocomplete: "off", placeholder: "For example: A. Clinician, ARNP (demo)" });
     const notes = el("textarea", { id: "review-notes", rows: "4", placeholder: "Notes from the review" });
     const done = el("input", { type: "checkbox", id: "review-done" });
     function edited() {
+      const { changed, kept } = counts();
+      tally.textContent = `Of the ${entries.length} drafted fields, ${kept} ${kept === 1 ? "stands" : "stand"} as the AI drafted ${kept === 1 ? "it" : "them"} and ${changed} ${changed === 1 ? "was" : "were"} changed by the reviewer.`;
       if (done.checked) {
         done.checked = false;
         mark();
       }
     }
     function mark() {
+      const { changed, kept } = counts();
       state.textContent = done.checked
-        ? `Marked as reviewed in this demo${reviewer.value.trim() ? ` by ${reviewer.value.trim()}` : ""}, ${new Date().toLocaleString()}. The review is simulated: no clinician was verified, and nothing has been signed.`
+        ? `Marked as reviewed in this demo${reviewer.value.trim() ? ` by ${reviewer.value.trim()}` : ""}, ${new Date().toLocaleString()}. Kept as drafted: ${kept} of ${entries.length} fields. Changed: ${changed}. Time from opening the draft to marking it reviewed: ${took()}. The review is simulated: no clinician was verified, and nothing has been signed.`
         : "Not reviewed.";
       state.classList.toggle("is-done", done.checked);
     }
     done.addEventListener("change", mark);
     reviewer.addEventListener("input", () => done.checked && mark());
+    edited();
 
     const questions = conversation.filter((message) => message.role === "assistant").map((message) => message.content);
     const section = (number, title, ...body) => el("section", { class: "review__part" }, el("h3", { class: "subhead" }, el("b", { text: `${number} ` }), title), body);
@@ -434,9 +467,11 @@
           1,
           "Draft mapping to the form",
           el("p", { class: "review__lede", text: "Each field is marked as stated by the patient, needing clarification, or not discussed. Gaps are left empty. A clinician can change any of it." }),
-          rows,
-          fixed("Section C", "Signatures: MD/DO/ARNP/PA-C, and the individual or legal medical decision maker (mandatory)", "Not signed. A POLST is valid only when signed by a clinician and by the individual or their legal medical decision maker."),
-          fixed("Page 1", "Name and date of birth", "Not collected in this demo.")
+          group("Page 1", "about the individual", fixed("Name and date of birth", "Not collected in this demo.")),
+          group("Section A", "CPR"),
+          group("Section B", "level of medical interventions"),
+          group("Section C", "discussion and signatures", fixed("Signatures: MD/DO/ARNP/PA-C, and the individual or legal medical decision maker (mandatory)", "Not signed. A POLST is valid only when signed by a clinician and by the individual or their legal medical decision maker.")),
+          group("Page 2", "medically assisted nutrition")
         ),
 
         section(
@@ -445,30 +480,29 @@
           el(
             "div",
             { class: "pair review__pair" },
-            el("div", {}, el("p", { class: "sheet__label", text: "What the person said" }), list(review.stated, "Nothing recorded.")),
-            el("div", {}, el("p", { class: "sheet__label", text: "The AI’s interpretation (unverified)" }), list(review.interpretation, "No interpretation offered."))
+            block("What the person said", list(review.stated, "Nothing recorded.")),
+            block("The AI’s interpretation (unverified)", list(review.interpretation, "No interpretation offered."))
           )
         ),
 
         section(
           3,
           "Conversation notes",
-          el("p", { class: "sheet__label", text: "In their words" }),
-          review.quotes.length ? el("ul", { class: "notes", role: "list" }, review.quotes.map((item) => el("li", {}, `“${item.quote}”`, el("span", { class: "notes__topic", text: ` ${item.topic}` })))) : el("p", { class: "review__none", text: "No quotes recorded." }),
-          el("p", { class: "sheet__label", text: "Questions the guide asked" }),
-          list(questions, "None."),
+          block(
+            "In their words",
+            review.quotes.length ? el("ul", { class: "notes", role: "list" }, review.quotes.map((item) => el("li", {}, `“${item.quote}”`, el("span", { class: "notes__topic", text: ` ${item.topic}` })))) : el("p", { class: "review__none", text: "No quotes recorded." })
+          ),
+          block("Questions the guide asked", list(questions, "None.")),
           el("details", { class: "review__all" }, el("summary", { text: "Read the whole conversation" }), el("ol", { class: "log log--plain" }, conversation.map((message) => el("li", { class: `turn turn--${message.role === "assistant" ? "guide" : "person"}` }, el("span", { class: "turn__who", text: message.role === "assistant" ? "Guide" : "Person" }), el("p", { text: message.content })))))
         ),
 
         section(
           4,
           "Conflicts, uncertainties and questions for the clinician",
-          el("p", { class: "sheet__label", text: "Conflicts" }),
-          list(conflicts, "None noted."),
-          el("p", { class: "sheet__label", text: "Uncertainties" }),
-          list([...review.uncertainties, ...open.map((meta) => `${meta.where}, “${meta.label}” is not settled.`)], "None noted."),
-          el("p", { class: "sheet__label", text: "Questions to ask" }),
-          list(review.followups, "None suggested.")
+          block("Conflicts", list(conflicts, "None noted.")),
+          block("Uncertainties from the conversation", list(review.uncertainties, "None noted.")),
+          block("Form fields without a settled answer", list(open.map((meta) => [el("b", { text: `${meta.where}. ` }), meta.label]), "Every field has a stated answer.")),
+          block("Questions to ask", list(review.followups, "None suggested."))
         ),
 
         section(
@@ -479,6 +513,7 @@
           reviewer,
           el("label", { for: "review-notes", class: "sheet__label", text: "Reviewer’s notes" }),
           notes,
+          block("What the reviewer changed", tally, el("p", { class: "review__lede", text: "Each field in part 1 shows whether it stands as the AI drafted it or was changed, with the AI’s original beside it. The count stays on this page and in the printout; the demo does not store it." })),
           el("label", { class: "review__check", for: "review-done" }, done, " Mark as reviewed (simulated)"),
           state
         ),
