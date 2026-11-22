@@ -581,8 +581,7 @@
   border: 0;
   border-block: 1px solid var(--ink);
   background: none;
-  font-style: italic;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 .paper .review__banner {
@@ -600,14 +599,11 @@
 .paper .replies legend,
 .paper .review__sub,
 .paper .glance__label {
-  font-variant-caps: small-caps;
-  font-weight: 400;
-  letter-spacing: 0.04em;
+  font-weight: 600;
 }
 
 .paper .turn--person p {
-  font-style: italic;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 /* A reply to choose is a box to tick. */
@@ -666,7 +662,7 @@
   padding: 0.75rem 0 0;
   border-top: 1px solid var(--ink);
   background: none;
-  font-size: 1.0625rem;
+  font-size: 0.9375rem;
 }
 
 @media (min-width: 48rem) {
@@ -704,13 +700,8 @@
 }
 
 .paper .field.is-changed .field__track {
-  color: inherit;
-  font-style: italic;
-  font-weight: 700;
-}
-
-.paper .field__track {
-  font-style: italic;
+  color: var(--ink);
+  font-weight: 600;
 }
 
 /* At a glance: three figures on a ruled line. */

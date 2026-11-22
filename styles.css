@@ -1,6 +1,16 @@
 /* Pumpkin
-   One typeface (Times New Roman), one accent, one left axis. Shared by every page.
-   The rules that set the printed look are at the end of this file. */
+   One typeface (Montserrat), one accent, one left axis. Shared by every page.
+   The rules that keep it plain (no fills, no rounded corners) are at the end. */
+
+/* Metric-matched fallback, so text does not jump when Montserrat arrives. */
+@font-face {
+  font-family: "Montserrat Fallback";
+  src: local("Arial");
+  size-adjust: 113%;
+  ascent-override: 85.7%;
+  descent-override: 22.2%;
+  line-gap-override: 0%;
+}
 
 :root {
   color-scheme: light;
@@ -16,7 +26,7 @@
   --rule: #DDD6C9;
 
   /* Type. A perfect fourth from an 18px body: 14, 18, 24, 43, 57, 76, 135. */
-  --font: "Times New Roman", Times, "Liberation Serif", serif;
+  --font: "Montserrat", "Montserrat Fallback", "Helvetica Neue", Arial, sans-serif;
   --fs-small: 0.875rem;
   --fs-body: clamp(1.0625rem, 1.0405rem + 0.094vw, 1.125rem);
   --fs-lead: clamp(1.25rem, 1.162rem + 0.376vw, 1.5rem);
@@ -704,39 +714,20 @@ a:hover {
 }
 
 /* ------------------------------------------------------------------
-   The printed look, site-wide: Times New Roman, no fills, no rounded
-   corners. Kept together here so it can be read, and changed, in one
-   place. It overrides the rules above.
+   Plain, site-wide: no fills, no rounded corners. Kept together here
+   so it can be read, and changed, in one place. It overrides the
+   rules above.
    ------------------------------------------------------------------ */
 
 :root {
-  --font: "Times New Roman", Times, "Liberation Serif", serif;
-  --fs-small: 1rem;
-  --fs-body: clamp(1.1875rem, 1.15rem + 0.16vw, 1.3125rem);
   --sheet: var(--paper); /* panels are the colour of the page, set apart by rules */
   --radius: 0;
-}
-
-body {
-  line-height: 1.5;
 }
 
 *,
 *::before,
 *::after {
   border-radius: 0 !important;
-}
-
-h1,
-h2,
-h3,
-h4,
-.wordmark,
-.title,
-.statement,
-.subhead {
-  font-weight: 700;
-  letter-spacing: -0.01em;
 }
 
 /* Buttons are outlined, never filled. */
